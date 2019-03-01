@@ -1,0 +1,6 @@
+---
+servers:
+  - ipaddr: 172.16.3.15
+    iptype: 'V4'
+  - ipaddr: 172.16.3.5
+    iptype: 'V4'
