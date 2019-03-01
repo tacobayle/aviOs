@@ -6,7 +6,7 @@
     listNetworkUuid: []
 
   vars_files:
-    - "vars/creds.json"
+    - "vars/credsKeystone.json"
     - "vars/params.yml"
     - "vars/server.yml"
 

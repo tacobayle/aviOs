@@ -73,7 +73,11 @@
       retries: 120
       delay: 10
 
-    - debug: var=statusCloud
+    - name: sleep for 20
+      wait_for: timeout=20
+      delegate_to: localhost
+
+    #- debug: var=statusCloud
 
 
 # url: https://200.1.1.2/api/systemconfiguration
