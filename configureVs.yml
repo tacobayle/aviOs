@@ -47,6 +47,8 @@
           significant_log_throttle: 10
           client_insights: PASSIVE
       loop: "{{ virtualservice.dns }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: virtualservice.dns is defined
 
 
@@ -99,6 +101,8 @@
       with_nested:
         - "{{ avi_pool }}"
         - "{{ servers }}"
+      loop_control:
+        label: "{{ item.0.name }}"
 
     - name: Create HTTP Virtualservice (based on Dynamic IP - Ipam)
       avi_virtualservice:
@@ -136,6 +140,8 @@
           significant_log_throttle: 10
           client_insights: PASSIVE
       loop: "{{ virtualservice.http }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: virtualservice.http is defined
 
 
@@ -178,4 +184,57 @@
           significant_log_throttle: 10
           client_insights: PASSIVE
       loop: "{{ virtualservice.https }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: virtualservice.https is defined
+
+    - name: Wait for the first DNS VS to be ready
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        api_version: "{{ avi_credentials.api_version }}"
+        http_method: get
+        timeout: 300
+        path: virtualservice-inventory
+        tenant: "{{ item.tenant | default('admin') }}"
+      register: statusVs
+      until: statusVs.obj.results.0.runtime.oper_status.state == "OPER_UP"
+      retries: 120
+      delay: 10
+      loop: "{{ virtualservice.dns }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: virtualservice.dns is defined
+
+    - name: Wait for the first HTTP VS to be ready
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        api_version: "{{ avi_credentials.api_version }}"
+        http_method: get
+        timeout: 300
+        path: virtualservice-inventory
+        tenant: "{{ item.tenant | default('admin') }}"
+      register: statusVs
+      until: statusVs.obj.results.0.runtime.oper_status.state == "OPER_UP"
+      retries: 120
+      delay: 10
+      loop: "{{ virtualservice.http }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: virtualservice.http is defined
+
+    - name: Wait for the first HTTPS VS to be ready
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        api_version: "{{ avi_credentials.api_version }}"
+        http_method: get
+        timeout: 300
+        path: virtualservice-inventory
+        tenant: "{{ item.tenant | default('admin') }}"
+      register: statusVs
+      until: statusVs.obj.results.0.runtime.oper_status.state == "OPER_UP"
+      retries: 120
+      delay: 10
+      loop: "{{ virtualservice.https }}"
+      loop_control:
+        label: "{{ item.name }}"
       when: virtualservice.https is defined
