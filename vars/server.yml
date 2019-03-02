@@ -1,6 +1,4 @@
 ---
-servers:
-  - ipaddr: 172.16.3.22
-    iptype: 'V4'
-  - ipaddr: 172.16.3.14
-    iptype: 'V4'
+client:
+  - ipaddr: 192.168.139.100
+    sshKey: /home/avi/.ssh/id_rsa.azure.pub

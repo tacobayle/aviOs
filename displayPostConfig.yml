@@ -1,0 +1,44 @@
+---
+- hosts: localhost
+  connection: local
+
+  vars_files:
+    - "vars/client.yml"
+    - "vars/credsKeystone.json"
+    - "vars/params.yml"
+    - "vars/server.yml"
+
+  tasks:
+
+    - name: Post config. messages (Avi) Controller
+      debug:
+        msg:
+          - "Avi controller can be reach at:"
+          - "https://{{ avi_credentials.controller }}"
+          - "Username: {{ avi_credentials.username }}"
+          - "Password: {{ avi_credentials.password }}"
+
+    - name: Post config. messages (Avi) VS HTTP
+      debug:
+        msg:
+          - "HTTP FQDN vs is: {{ item.fqdn | default('not defined')}}"
+      loop: "{{ virtualservice.http }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: virtualservice.http is defined
+
+    - name: Post config. messages (Avi) VS HTTPS
+      debug:
+        msg:
+          - "HTTP FQDN vs is: {{ item.fqdn | default('not defined')}}"
+      loop: "{{ virtualservice.https }}"
+      loop_control:
+        label: "{{ item.name }}"
+      when: virtualservice.https is defined
+
+    - name: Post config. messages (OpenStack) client IP
+      debug:
+        msg:
+          - "Client IP is {{ item.ipaddr }}"
+          - "use \'ssh -i {{ item.sshKey }} ubuntu@{{ item.ipaddr }}\' to connect"
+      loop: "{{ client }}"

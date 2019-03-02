@@ -2,3 +2,4 @@
 - import_playbook: configureCloud.yml
 #- import_playbook: configureVrf.yml
 - import_playbook: configureVs.yml
+- import_playbook: displayPostConfig.yml
